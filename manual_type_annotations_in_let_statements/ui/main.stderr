@@ -1,0 +1,19 @@
+warning: 
+  --> $DIR/main.rs:2:5
+   |
+LL |     let x: usize = 5;
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = help: provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous
+   = note: `#[warn(manual_type_annotation_in_let_statements)]` on by default
+
+warning: 
+  --> $DIR/main.rs:3:5
+   |
+LL |     let y: Vec<usize> = [1, 2, 3, 4, 5].iter().copied().collect();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous
+
+warning: 2 warnings emitted
+

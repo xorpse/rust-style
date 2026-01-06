@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "manual_type_annotations_in_let_statements",
+    "to_string_on_string_types",
+]
+resolver = "3"
+
+[workspace.metadata.dylint]
+libraries = [
+    { path = "manual_type_annotations_in_let_statements" },
+    { path = "to_string_on_string_types" },
+]

@@ -1,0 +1,27 @@
+warning: 
+  --> $DIR/main.rs:2:13
+   |
+LL |     let a = "hello".to_string();
+   |             ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(to_string_on_string_types)]` on by default
+   = help: use `to_owned` rather than `to_string` to obtain a `String`
+
+warning: 
+  --> $DIR/main.rs:6:13
+   |
+LL |     let d = c.to_string();
+   |             ^^^^^^^^^^^^^
+   |
+   = help: use `to_owned` rather than `to_string` to obtain a `String`
+
+warning: 
+  --> $DIR/main.rs:7:13
+   |
+LL |     let e = d.to_string();
+   |             ^^^^^^^^^^^^^
+   |
+   = help: use `to_owned` rather than `to_string` to obtain a `String`
+
+warning: 3 warnings emitted
+

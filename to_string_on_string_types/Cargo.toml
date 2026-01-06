@@ -1,0 +1,20 @@
+[package]
+name = "to_string_on_string_types"
+version = "0.1.0"
+authors = ["Sam L. Thomas <s@ghost.sh>"]
+description = "Lint to detect manual type annotations in let statements"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+clippy_utils = { git = "https://github.com/rust-lang/rust-clippy", rev = "48657cec85a38c0f1fade3eaf905b19bf23d356f" }
+dylint_linting = "5.0"
+
+[dev-dependencies]
+dylint_testing = "5.0"
+
+[package.metadata.rust-analyzer]
+rustc_private = true
