@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::convert::TryInto;
 
 fn main() {
     // Integer literals with various types
@@ -24,4 +25,14 @@ fn main() {
 
     // Chained method call - just remove annotation
     let s: String = "hello".to_string();
+
+    // into() conversion - should suggest T::from(receiver)
+    let into_simple: String = "hello".into();
+    let into_complex: Vec<u8> = "hello".to_string().into();
+
+    // try_into() - direct call (without ? or unwrap)
+    let try_into_val: u8 = 100u32.try_into().expect("fits");
+
+    // None - type annotation is required here
+    let none_val: Option<String> = None;
 }

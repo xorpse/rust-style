@@ -60,7 +60,7 @@ fn try_suggest_literal_suffix(
             if SUFFIX_TYPES.contains(&type_str) {
                 Some(vec![
                     (remove_span, String::new()),
-                    (lit.span.shrink_to_hi(), type_str.to_string()),
+                    (lit.span.shrink_to_hi(), type_str.to_owned()),
                 ])
             } else {
                 // Non-primitive type, just remove annotation
@@ -114,18 +114,35 @@ fn build_suggestion(
     let remove_span = stmt.pat.span.between(ty_hir.span).to(ty_hir.span);
 
     match &init.kind {
-        ExprKind::MethodCall(segment, _receiver, _args, _span) => {
-            // Check if this is a method that makes sense with turbofish (like collect)
+        ExprKind::MethodCall(segment, receiver, _args, _span) => {
             let method_name = segment.ident.name.as_str();
-            if matches!(method_name, "collect" | "into" | "try_into" | "from_iter") {
-                // Add turbofish to the method
-                Some(vec![
-                    (remove_span, String::new()),
-                    (segment.ident.span.shrink_to_hi(), format!("::<{}>", type_str)),
-                ])
-            } else {
-                // For other methods (to_string, clone, etc.) - just remove annotation
-                Some(vec![(remove_span, String::new())])
+
+            match method_name {
+                // Methods that support turbofish
+                "collect" | "from_iter" => {
+                    Some(vec![
+                        (remove_span, String::new()),
+                        (segment.ident.span.shrink_to_hi(), format!("::<{}>", type_str)),
+                    ])
+                }
+                // into() -> T::from(receiver)
+                "into" => {
+                    let receiver_str = source_map.span_to_snippet(receiver.span).ok()?;
+                    Some(vec![
+                        (remove_span, String::new()),
+                        (init.span, format!("{}::from({})", type_str, receiver_str)),
+                    ])
+                }
+                // try_into() -> T::try_from(receiver)
+                "try_into" => {
+                    let receiver_str = source_map.span_to_snippet(receiver.span).ok()?;
+                    Some(vec![
+                        (remove_span, String::new()),
+                        (init.span, format!("{}::try_from({})", type_str, receiver_str)),
+                    ])
+                }
+                // Other methods (to_string, clone, etc.) - just remove annotation
+                _ => Some(vec![(remove_span, String::new())]),
             }
         }
         ExprKind::Call(callee, _args) => {
@@ -160,6 +177,22 @@ fn build_suggestion(
             } else {
                 Some(vec![(remove_span, String::new())])
             }
+        }
+        ExprKind::Path(rustc_hir::QPath::Resolved(_, path)) => {
+            // Handle None - suggest None::<T> where T is the inner type of Option<T>
+            if let Some(segment) = path.segments.last()
+                && segment.ident.name.as_str() == "None" {
+                    // Extract inner type from Option<T>
+                    if let Some(args_span) = get_generic_args_span(ty_hir) {
+                        let args_str = source_map.span_to_snippet(args_span).ok()?;
+                        return Some(vec![
+                            (remove_span, String::new()),
+                            (segment.ident.span.shrink_to_hi(), format!("::{}", args_str)),
+                        ]);
+                    }
+                }
+            // Other paths - just remove annotation
+            Some(vec![(remove_span, String::new())])
         }
         _ => {
             // For other expressions - just remove type annotation
