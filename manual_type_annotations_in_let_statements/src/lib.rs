@@ -1,9 +1,15 @@
 #![feature(rustc_private)]
 #![warn(unused_extern_crates)]
 
+extern crate rustc_ast;
+extern crate rustc_errors;
 extern crate rustc_hir;
+extern crate rustc_span;
 
+use rustc_errors::Applicability;
+use rustc_hir::ExprKind;
 use rustc_lint::{LateLintPass, LintContext};
+use rustc_span::Span;
 
 dylint_linting::declare_late_lint! {
     /// ### What it does
@@ -36,6 +42,132 @@ dylint_linting::declare_late_lint! {
     "manual type annotation in let statement where it should be inferred"
 }
 
+/// Primitive types that support literal suffixes.
+const SUFFIX_TYPES: &[&str] = &[
+    "i8", "i16", "i32", "i64", "i128", "isize",
+    "u8", "u16", "u32", "u64", "u128", "usize",
+    "f32", "f64",
+];
+
+/// Try to suggest adding a type suffix to a numeric literal.
+fn try_suggest_literal_suffix(
+    remove_span: Span,
+    lit: &rustc_hir::Lit,
+    type_str: &str,
+) -> Option<Vec<(Span, String)>> {
+    match lit.node {
+        rustc_ast::LitKind::Int(..) | rustc_ast::LitKind::Float(..) => {
+            if SUFFIX_TYPES.contains(&type_str) {
+                Some(vec![
+                    (remove_span, String::new()),
+                    (lit.span.shrink_to_hi(), type_str.to_string()),
+                ])
+            } else {
+                // Non-primitive type, just remove annotation
+                Some(vec![(remove_span, String::new())])
+            }
+        }
+        _ => {
+            // Other literals (strings, chars, etc.) - just remove annotation
+            Some(vec![(remove_span, String::new())])
+        }
+    }
+}
+
+/// Extracts generic arguments span from a type HIR node.
+/// For `Vec<usize>` returns the span of `<usize>`.
+/// For `HashMap<String, i32>` returns the span of `<String, i32>`.
+fn get_generic_args_span(ty_hir: &rustc_hir::Ty<'_>) -> Option<Span> {
+    if let rustc_hir::TyKind::Path(qpath) = &ty_hir.kind {
+        let segment = match qpath {
+            rustc_hir::QPath::Resolved(_, path) => path.segments.last()?,
+            rustc_hir::QPath::TypeRelative(_, segment) => *segment,
+        };
+        // Get the args span if there are generic arguments
+        if let Some(args) = segment.args {
+            return Some(args.span_ext);
+        }
+    }
+    None
+}
+
+/// Builds a multipart suggestion for moving the type annotation.
+/// Returns None if we can't build a suggestion (e.g., macro-generated code).
+fn build_suggestion(
+    cx: &rustc_lint::LateContext<'_>,
+    stmt: &rustc_hir::LetStmt<'_>,
+) -> Option<Vec<(Span, String)>> {
+    let ty_hir = stmt.ty?;
+    let init = stmt.init?;
+
+    // Skip macro-generated code
+    if stmt.span.from_expansion() {
+        return None;
+    }
+
+    let source_map = cx.sess().source_map();
+
+    // Get the type string from source
+    let type_str = source_map.span_to_snippet(ty_hir.span).ok()?;
+
+    // The span to remove: `: Type` (from after pattern to end of type annotation)
+    let remove_span = stmt.pat.span.between(ty_hir.span).to(ty_hir.span);
+
+    match &init.kind {
+        ExprKind::MethodCall(segment, _receiver, _args, _span) => {
+            // Check if this is a method that makes sense with turbofish (like collect)
+            let method_name = segment.ident.name.as_str();
+            if matches!(method_name, "collect" | "into" | "try_into" | "from_iter") {
+                // Add turbofish to the method
+                Some(vec![
+                    (remove_span, String::new()),
+                    (segment.ident.span.shrink_to_hi(), format!("::<{}>", type_str)),
+                ])
+            } else {
+                // For other methods (to_string, clone, etc.) - just remove annotation
+                Some(vec![(remove_span, String::new())])
+            }
+        }
+        ExprKind::Call(callee, _args) => {
+            // For Type::new() style calls - add turbofish to the type path
+            if let ExprKind::Path(rustc_hir::QPath::TypeRelative(callee_ty, _segment)) = &callee.kind
+            {
+                // Extract just the generic args from the type annotation
+                if let Some(args_span) = get_generic_args_span(ty_hir) {
+                    let args_str = source_map.span_to_snippet(args_span).ok()?;
+                    // Insert ::<Args> after the type name in the callee
+                    Some(vec![
+                        (remove_span, String::new()),
+                        (callee_ty.span.shrink_to_hi(), format!("::{}", args_str)),
+                    ])
+                } else {
+                    // No generic args - just remove annotation
+                    Some(vec![(remove_span, String::new())])
+                }
+            } else {
+                // Other call types - just remove the annotation
+                Some(vec![(remove_span, String::new())])
+            }
+        }
+        ExprKind::Lit(lit) => {
+            // For numeric literals, add type suffix
+            try_suggest_literal_suffix(remove_span, lit, &type_str)
+        }
+        ExprKind::Unary(rustc_hir::UnOp::Neg | rustc_hir::UnOp::Not, inner) => {
+            // For negated literals like `-10`, add suffix to the inner literal
+            if let ExprKind::Lit(lit) = &inner.kind {
+                try_suggest_literal_suffix(remove_span, lit, &type_str)
+            } else {
+                Some(vec![(remove_span, String::new())])
+            }
+        }
+        _ => {
+            // For other expressions - just remove type annotation
+            Some(vec![(remove_span, String::new())])
+        }
+    }
+}
+
 impl<'tcx> LateLintPass<'tcx> for ManualTypeAnnotationInLetStatements {
     fn check_local(
         &mut self,
@@ -50,7 +182,15 @@ impl<'tcx> LateLintPass<'tcx> for ManualTypeAnnotationInLetStatements {
             MANUAL_TYPE_ANNOTATION_IN_LET_STATEMENTS,
             stmt.span,
             |diag| {
-                diag.help("provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous");
+                if let Some(suggestions) = build_suggestion(cx, stmt) {
+                    diag.multipart_suggestion(
+                        "move type to the right-hand side or remove it",
+                        suggestions,
+                        Applicability::MaybeIncorrect,
+                    );
+                } else {
+                    diag.help("provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous");
+                }
             },
         );
     }

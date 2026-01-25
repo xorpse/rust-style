@@ -1,19 +1,143 @@
 warning: 
-  --> $DIR/main.rs:2:5
+  --> $DIR/main.rs:5:5
    |
-LL |     let x: usize = 5;
+LL |     let a: usize = 5;
    |     ^^^^^^^^^^^^^^^^^
    |
-   = help: provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous
    = note: `#[warn(manual_type_annotation_in_let_statements)]` on by default
+help: move type to the right-hand side or remove it
+   |
+LL -     let a: usize = 5;
+LL +     let a = 5usize;
+   |
 
 warning: 
-  --> $DIR/main.rs:3:5
+  --> $DIR/main.rs:6:5
+   |
+LL |     let b: i32 = -10;
+   |     ^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let b: i32 = -10;
+LL +     let b = -10i32;
+   |
+
+warning: 
+  --> $DIR/main.rs:7:5
+   |
+LL |     let c: u8 = 255;
+   |     ^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let c: u8 = 255;
+LL +     let c = 255u8;
+   |
+
+warning: 
+  --> $DIR/main.rs:8:5
+   |
+LL |     let d: i64 = 1_000_000;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let d: i64 = 1_000_000;
+LL +     let d = 1_000_000i64;
+   |
+
+warning: 
+  --> $DIR/main.rs:11:5
+   |
+LL |     let e: f32 = 3.14;
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let e: f32 = 3.14;
+LL +     let e = 3.14f32;
+   |
+
+warning: 
+  --> $DIR/main.rs:12:5
+   |
+LL |     let f: f64 = 2.718;
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let f: f64 = 2.718;
+LL +     let f = 2.718f64;
+   |
+
+warning: 
+  --> $DIR/main.rs:15:5
+   |
+LL |     let g: u32 = 0xFF;
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let g: u32 = 0xFF;
+LL +     let g = 0xFFu32;
+   |
+
+warning: 
+  --> $DIR/main.rs:16:5
+   |
+LL |     let h: i32 = 0o77;
+   |     ^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let h: i32 = 0o77;
+LL +     let h = 0o77i32;
+   |
+
+warning: 
+  --> $DIR/main.rs:17:5
+   |
+LL |     let i: u8 = 0b1010;
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let i: u8 = 0b1010;
+LL +     let i = 0b1010u8;
+   |
+
+warning: 
+  --> $DIR/main.rs:20:5
    |
 LL |     let y: Vec<usize> = [1, 2, 3, 4, 5].iter().copied().collect();
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = help: provide type annotations on the right-hand side of the let, e.g., using turbofish, or remove them altogether if they're superfluous
+help: move type to the right-hand side or remove it
+   |
+LL -     let y: Vec<usize> = [1, 2, 3, 4, 5].iter().copied().collect();
+LL +     let y = [1, 2, 3, 4, 5].iter().copied().collect::<Vec<usize>>();
+   |
 
-warning: 2 warnings emitted
+warning: 
+  --> $DIR/main.rs:23:5
+   |
+LL |     let m: HashMap<String, i32> = HashMap::new();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+help: move type to the right-hand side or remove it
+   |
+LL -     let m: HashMap<String, i32> = HashMap::new();
+LL +     let m = HashMap::<String, i32>::new();
+   |
+
+warning: 
+  --> $DIR/main.rs:26:5
+   |
+LL |     let s: String = "hello".to_string();
+   |     ^^^^^--------^^^^^^^^^^^^^^^^^^^^^^^
+   |          |
+   |          help: move type to the right-hand side or remove it
+
+warning: 12 warnings emitted
 
