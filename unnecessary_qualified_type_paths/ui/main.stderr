@@ -1,0 +1,107 @@
+warning: 
+  --> $DIR/main.rs:19:11
+   |
+LL |     file: std::fs::File,
+   |           ^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+   = note: `#[warn(unnecessary_qualified_type_paths)]` on by default
+
+warning: 
+  --> $DIR/main.rs:20:12
+   |
+LL |     local: crate::inner::nested::Nested,
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:24:10
+   |
+LL |     Path(std::path::PathBuf),
+   |          ^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:27:17
+   |
+LL | type BadAlias = std::path::PathBuf;
+   |                 ^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:29:15
+   |
+LL | fn bad_arg(_: crate::inner::Local) {}
+   |               ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:31:20
+   |
+LL | fn bad_return() -> std::path::PathBuf {
+   |                    ^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:35:26
+   |
+LL | fn bad_generic(_: Option<std::path::PathBuf>) {}
+   |                          ^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:37:23
+   |
+LL | fn bad_trait_bound<T: std::fmt::Debug + crate::inner::LocalTrait>(_: T) {}
+   |                       ^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:37:41
+   |
+LL | fn bad_trait_bound<T: std::fmt::Debug + crate::inner::LocalTrait>(_: T) {}
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:39:23
+   |
+LL | fn bad_dyn(_: Box<dyn std::fmt::Debug>) {}
+   |                       ^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:41:21
+   |
+LL | fn bad_impl(_: impl std::fmt::Debug) {}
+   |                     ^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:43:18
+   |
+LL | fn bad_global(_: ::std::path::PathBuf) {}
+   |                  ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 
+  --> $DIR/main.rs:59:21
+   |
+LL |     let _bad_local: std::path::PathBuf = PathBuf::new();
+   |                     ^^^^^^^^^^^^^^^^^^
+   |
+   = help: import the type directly, rename the import if needed, or shorten the path to the last disambiguating module
+
+warning: 13 warnings emitted
+

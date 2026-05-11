@@ -20,7 +20,8 @@ The lints can be configured using a `dylint.toml` file. For example:
 libraries = [
     { git = "https://github.com/xorpse/rust-style", pattern = [
       "manual_type_annotations_in_let_statements",
-      "to_string_on_string_types"
+      "to_string_on_string_types",
+      "unnecessary_qualified_type_paths"
     ] }
 ]
 ```
