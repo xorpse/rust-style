@@ -23,21 +23,21 @@ dylint_linting::declare_pre_expansion_lint! {
     ///
     /// 1. **Naming.** A `pub` error type must not be called literally `Error` —
     ///    it must carry a descriptive prefix (e.g. `ParseError`, `IoError`).
-    /// 2. **Variant ordering.** Variants of an error enum must be sorted
-    ///    alphabetically (case-insensitive).
-    /// 3. **Mandatory derive.** Any type whose name ends in `Error` must derive
+    /// 2. **Mandatory derive.** Any type whose name ends in `Error` must derive
     ///    `thiserror::Error` (`#[derive(Error)]` or `#[derive(thiserror::Error)]`).
-    /// 4. **Constructor methods.** Each variant with one or more fields and
+    /// 3. **Constructor methods.** Each variant with one or more fields and
     ///    without a `#[from]` field attribute must have a snake-case
     ///    constructor `impl MyError { fn variant_name(...) -> Self }` somewhere
     ///    in the same crate.
     ///
+    /// Alphabetical variant ordering is enforced separately by the
+    /// `sorted_enum_variants` lint.
+    ///
     /// ### Why is this bad?
     ///
     /// These conventions keep error types predictable: callers can `use` them
-    /// without conflict, variants are easy to find in source, error rendering
-    /// is uniform via `thiserror`, and complex variants have a single
-    /// canonical constructor.
+    /// without conflict, error rendering is uniform via `thiserror`, and
+    /// complex variants have a single canonical constructor.
     ///
     /// ### Example
     ///
@@ -74,7 +74,7 @@ dylint_linting::declare_pre_expansion_lint! {
     /// ```
     pub THISERROR_CONVENTIONS,
     Warn,
-    "enforce thiserror conventions: naming, alphabetical variants, mandatory derive, constructors for complex variants"
+    "enforce thiserror conventions: naming, mandatory derive, constructors for complex variants"
 }
 
 type InherentMethods = HashMap<Symbol, HashSet<Symbol>>;
@@ -192,24 +192,6 @@ fn check_naming(cx: &EarlyContext<'_>, item: &Item) {
     });
 }
 
-fn check_variant_ordering(cx: &EarlyContext<'_>, enum_def: &EnumDef) {
-    for window in enum_def.variants.windows(2) {
-        let prev = &window[0];
-        let next = &window[1];
-        let prev_key = prev.ident.name.as_str().to_ascii_lowercase();
-        let next_key = next.ident.name.as_str().to_ascii_lowercase();
-        if next_key < prev_key {
-            let prev_name = prev.ident.name;
-            let next_name = next.ident.name;
-            cx.span_lint(THISERROR_CONVENTIONS, next.ident.span, |diag| {
-                diag.help(format!(
-                    "move `{next_name}` before `{prev_name}` to keep variants in alphabetical order",
-                ));
-            });
-        }
-    }
-}
-
 fn check_must_derive_thiserror(cx: &EarlyContext<'_>, item: &Item) {
     let Some(ident) = item.kind.ident() else {
         return;
@@ -275,7 +257,6 @@ fn check_items(cx: &EarlyContext<'_>, items: &[Box<Item>], inherent_methods: &In
         if let ItemKind::Enum(ident, _, enum_def) = &item.kind
             && derives_thiserror_error(&item.attrs)
         {
-            check_variant_ordering(cx, enum_def);
             check_variant_constructors(cx, ident.name, enum_def, inherent_methods);
         }
 

@@ -3,20 +3,21 @@
 ### What it does
 
 Enforces project conventions on error types built with [`thiserror`](https://docs.rs/thiserror).
-A single lint covering four sub-rules:
+A single lint covering three sub-rules:
 
 1. **Naming.** A `pub` error type must not be called literally `Error` — it must carry
    a descriptive prefix (e.g. `ParseError`, `IoError`) so callers can `use` it
    without conflicting with `std::error::Error` or other crates' `Error` types.
-2. **Variant ordering.** Variants of an error enum must be sorted alphabetically
-   (case-insensitive).
-3. **Mandatory derive.** Any type whose name ends in `Error` must derive
+2. **Mandatory derive.** Any type whose name ends in `Error` must derive
    `thiserror::Error` (`#[derive(Error)]` or `#[derive(thiserror::Error)]`).
-4. **Constructor methods.** Each variant with one or more fields and without a
+3. **Constructor methods.** Each variant with one or more fields and without a
    `#[from]` field attribute must have a snake-case constructor
    `impl MyError { fn variant_name(...) -> Self }` somewhere in the same crate.
    Variants with `#[from]` get their constructor "for free" via `From::from`;
    unit variants need no constructor.
+
+Alphabetical variant ordering is enforced separately by the
+[`sorted_enum_variants`](../sorted_enum_variants) lint.
 
 ### Why is this bad?
 

@@ -1,0 +1,27 @@
+warning: 
+  --> $DIR/main.rs:5:5
+   |
+LL |     Alpha,
+   |     ^^^^^
+   |
+   = help: move `Alpha` before `Charlie` to keep variants in alphabetical order
+   = note: `#[warn(sorted_enum_variants)]` on by default
+
+warning: 
+  --> $DIR/main.rs:17:5
+   |
+LL |     apple,
+   |     ^^^^^
+   |
+   = help: move `apple` before `Zebra` to keep variants in alphabetical order
+
+warning: 
+  --> $DIR/main.rs:50:5
+   |
+LL |     Alpha(u32),
+   |     ^^^^^
+   |
+   = help: move `Alpha` before `Beta` to keep variants in alphabetical order
+
+warning: 3 warnings emitted
+

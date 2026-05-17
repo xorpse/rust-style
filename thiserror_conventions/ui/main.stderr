@@ -8,36 +8,12 @@ LL | pub enum Error {
    = note: `#[warn(thiserror_conventions)]` on by default
 
 warning: 
-  --> $DIR/main.rs:16:5
-   |
-LL |     Alpha,
-   |     ^^^^^
-   |
-   = help: move `Alpha` before `Charlie` to keep variants in alphabetical order
-
-warning: 
   --> $DIR/main.rs:21:10
    |
 LL | pub enum BareError {
    |          ^^^^^^^^^
    |
    = help: this type's name ends in `Error`; derive `thiserror::Error` on it (`#[derive(Error)]` or `#[derive(thiserror::Error)]`) so error rendering and trait impls are consistent across the codebase
-
-warning: 
-  --> $DIR/main.rs:30:5
-   |
-LL |     HasCtor(u32),
-   |     ^^^^^^^
-   |
-   = help: move `HasCtor` before `NoCtor` to keep variants in alphabetical order
-
-warning: 
-  --> $DIR/main.rs:34:5
-   |
-LL |     Unit,
-   |     ^^^^
-   |
-   = help: move `Unit` before `WithFrom` to keep variants in alphabetical order
 
 warning: 
   --> $DIR/main.rs:28:5
@@ -55,5 +31,5 @@ LL | pub struct NotAnError {
    |
    = help: this type's name ends in `Error`; derive `thiserror::Error` on it (`#[derive(Error)]` or `#[derive(thiserror::Error)]`) so error rendering and trait impls are consistent across the codebase
 
-warning: 7 warnings emitted
+warning: 4 warnings emitted
 
