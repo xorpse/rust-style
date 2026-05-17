@@ -1,0 +1,59 @@
+warning: 
+  --> $DIR/main.rs:6:5
+   |
+LL |     b: u32,
+   |     ^^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+   = note: `#[warn(blank_lines_between_variants_or_fields)]` on by default
+
+warning: 
+  --> $DIR/main.rs:10:5
+   |
+LL |     d: u32,
+   |     ^^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 
+  --> $DIR/main.rs:32:5
+   |
+LL |     u32,
+   |     ^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 
+  --> $DIR/main.rs:38:5
+   |
+LL |     b: f32,
+   |     ^^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 
+  --> $DIR/main.rs:49:5
+   |
+LL |     Bravo,
+   |     ^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 
+  --> $DIR/main.rs:51:5
+   |
+LL |     Charlie { x: u32, y: u32 },
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 
+  --> $DIR/main.rs:55:9
+   |
+LL |         y: u32,
+   |         ^^^^^^
+   |
+   = help: remove the blank line(s) above; variants and fields should be tightly packed
+
+warning: 7 warnings emitted
+

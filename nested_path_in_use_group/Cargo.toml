@@ -1,0 +1,19 @@
+[package]
+name = "nested_path_in_use_group"
+version = "0.1.0"
+authors = ["Sam L. Thomas <s@ghost.sh>"]
+description = "Lint to detect nested multi-segment paths inside `use` groups"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+dylint_linting = "5.0"
+
+[dev-dependencies]
+dylint_testing = "5.0"
+
+[package.metadata.rust-analyzer]
+rustc_private = true

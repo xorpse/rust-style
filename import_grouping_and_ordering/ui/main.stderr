@@ -1,0 +1,67 @@
+warning: 
+  --> $DIR/main.rs:6:1
+   |
+LL | use std::collections::HashMap;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: place this standard library import above the external crate imports (order: standard library, external crates, same-crate)
+   = note: `#[warn(import_grouping_and_ordering)]` on by default
+
+warning: 
+  --> $DIR/main.rs:9:1
+   |
+LL | use std::path::PathBuf;
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: place this standard library import above the same-crate imports (order: standard library, external crates, same-crate)
+
+warning: 
+  --> $DIR/main.rs:10:1
+   |
+LL | use fakecrate::OtherThing as Renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: place this external crate import above the same-crate imports (order: standard library, external crates, same-crate)
+
+warning: 
+  --> $DIR/main.rs:11:1
+   |
+LL | use std::fs::File;
+   | ^^^^^^^^^^^^^^^^^^
+   |
+   = help: place this standard library import above the same-crate imports (order: standard library, external crates, same-crate)
+
+warning: 
+  --> $DIR/main.rs:7:1
+   |
+LL | use crate::OtherThing as O1;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: insert a blank line before this same-crate import to separate it from the standard library group
+
+warning: 
+  --> $DIR/main.rs:10:1
+   |
+LL | use fakecrate::OtherThing as Renamed;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: insert a blank line before this external crate import to separate it from the standard library group
+
+warning: 
+  --> $DIR/main.rs:18:5
+   |
+LL |     use std::io;
+   |     ^^^^^^^^^^^^
+   |
+   = help: place this standard library import above the external crate imports (order: standard library, external crates, same-crate)
+
+warning: 
+  --> $DIR/main.rs:19:5
+   |
+LL |     use crate::inner::InnerThing as Self0;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: insert a blank line before this same-crate import to separate it from the standard library group
+
+warning: 8 warnings emitted
+

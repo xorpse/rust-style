@@ -1,0 +1,51 @@
+warning: 
+  --> $DIR/main.rs:5:9
+   |
+LL |         pub timeout: u64,
+   |         ^^^
+   |
+   = help: this struct field is public; expose it through the project's accessor style: `fn timeout(&self) -> …`, `fn set_timeout(&mut self, …)`, `fn with_timeout(mut self, …) -> Self` (delegating to `set_timeout`), or restrict visibility to `pub(crate)`
+   = note: `#[warn(pub_field_in_struct)]` on by default
+
+warning: 
+  --> $DIR/main.rs:6:9
+   |
+LL |         pub label: String,
+   |         ^^^
+   |
+   = help: this struct field is public; expose it through the project's accessor style: `fn label(&self) -> …`, `fn set_label(&mut self, …)`, `fn with_label(mut self, …) -> Self` (delegating to `set_label`), or restrict visibility to `pub(crate)`
+
+warning: 
+  --> $DIR/main.rs:11:9
+   |
+LL |         pub a: u32,
+   |         ^^^
+   |
+   = help: this struct field is public; expose it through the project's accessor style: `fn a(&self) -> …`, `fn set_a(&mut self, …)`, `fn with_a(mut self, …) -> Self` (delegating to `set_a`), or restrict visibility to `pub(crate)`
+
+warning: 
+  --> $DIR/main.rs:17:25
+   |
+LL |     pub struct BadTuple(pub u32, u32, pub String);
+   |                         ^^^
+   |
+   = help: the positional field on this struct is public; expose it through an accessor pair (e.g. `fn inner(&self) -> &T`, `fn into_inner(self) -> T`) or restrict visibility to `pub(crate)`
+
+warning: 
+  --> $DIR/main.rs:17:39
+   |
+LL |     pub struct BadTuple(pub u32, u32, pub String);
+   |                                       ^^^
+   |
+   = help: the positional field on this struct is public; expose it through an accessor pair (e.g. `fn inner(&self) -> &T`, `fn into_inner(self) -> T`) or restrict visibility to `pub(crate)`
+
+warning: 
+  --> $DIR/main.rs:27:9
+   |
+LL |         pub a: u32,
+   |         ^^^
+   |
+   = help: this union field is public; expose it through the project's accessor style: `fn a(&self) -> …`, `fn set_a(&mut self, …)`, `fn with_a(mut self, …) -> Self` (delegating to `set_a`), or restrict visibility to `pub(crate)`
+
+warning: 6 warnings emitted
+

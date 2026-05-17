@@ -1,0 +1,19 @@
+[package]
+name = "import_grouping_and_ordering"
+version = "0.1.0"
+authors = ["Sam L. Thomas <s@ghost.sh>"]
+description = "Lint to enforce stdlib/external/same-crate import grouping and ordering"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+dylint_linting = "5.0"
+
+[dev-dependencies]
+dylint_testing = "5.0"
+
+[package.metadata.rust-analyzer]
+rustc_private = true

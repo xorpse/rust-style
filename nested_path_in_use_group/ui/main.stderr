@@ -1,0 +1,75 @@
+warning: 
+  --> $DIR/main.rs:32:13
+   |
+LL | use outer::{gamma::C, delta::D};
+   |             ^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+   = note: `#[warn(nested_path_in_use_group)]` on by default
+
+warning: 
+  --> $DIR/main.rs:32:23
+   |
+LL | use outer::{gamma::C, delta::D};
+   |                       ^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:34:13
+   |
+LL | use outer::{alpha::deep::X as Z, beta::Y};
+   |             ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:34:34
+   |
+LL | use outer::{alpha::deep::X as Z, beta::Y};
+   |                                  ^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:36:13
+   |
+LL | use outer::{alpha::{A as A2, deep::X as X2}, beta::B};
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:36:30
+   |
+LL | use outer::{alpha::{A as A2, deep::X as X2}, beta::B};
+   |                              ^^^^^^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:36:46
+   |
+LL | use outer::{alpha::{A as A2, deep::X as X2}, beta::B};
+   |                                              ^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:38:11
+   |
+LL | use std::{collections::BTreeMap, path::Component};
+   |           ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 
+  --> $DIR/main.rs:38:34
+   |
+LL | use std::{collections::BTreeMap, path::Component};
+   |                                  ^^^^^^^^^^^^^^^
+   |
+   = help: split this into separate `use` statements, one per leaf path, and reserve `{}` grouping for sibling leaf items
+
+warning: 9 warnings emitted
+
